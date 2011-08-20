@@ -37,18 +37,24 @@ public function __construct($URI,$user,$link)
 		$this->lnk=$link;
 		$this->rights=$user->get_user();
 //		var_dump($this->rights);
-		$qqq='SELECT * FROM channels,c_u WHERE channel_name="'.$this->filter($URI).'" && 
+
+if ($rights['admin_channels']==1)
+{
+		$qqq='SELECT * FROM channels WHERE channel_name="'.mysql_real_escape_string($URI).'"';
+		$res=mysql_query($qqq,$this->lnk);
+}
+else
+{
+		$qqq='SELECT * FROM channels,c_u WHERE channel_name="'.mysql_real_escape_string($URI).'" && 
 		(
 		(c_u_UID="'.$this->rights['UID'].'" and c_u_channel=channel_id and channel_admin_UID!="'.$this->rights['UID'].'")
 		||
 		(channel_admin_UID="'.$this->rights['UID'].'")
-		||
-		(
-		"'.$rights['admin_channels'].'"=1
-		)
 		) LIMIT 1';
 //		echo $qqq;
 		$res=mysql_query($qqq,$this->lnk);
+}
+
 		if(mysql_num_rows($res)==1)
 			{
 			$this->channel=mysql_fetch_assoc($res);
@@ -92,6 +98,7 @@ private function form()
 	<form name="post_mesg" action="" method="post">
 	<input name="s" value="<? echo session_id(); ?>" type="hidden">
 	<textarea name="new_mesg" cols="60" rows="2"  class="msg"></textarea>
+	<p>Нажмите Enter чтобы отправить сообщение</p>
 	<noscript><p><input name="post_mesg_submit" type="submit"></p></noscript>
 	</form>
 	<?	
