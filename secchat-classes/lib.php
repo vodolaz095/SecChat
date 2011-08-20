@@ -36,8 +36,8 @@ return($lnk);
 
 
 
-include ("page.php");
-include ("user.php");
-include ("channel.php");
+include ("class_page.php");
+include ("class_user.php");
+include ("class_channel.php");
 
 </script>

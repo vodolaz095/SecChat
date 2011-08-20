@@ -48,7 +48,7 @@
 			{
 			$pwd=strtoupper(substr((md5(date('c'))),0,8));
 			echo '<p>Пользователь создан! Логин <strong>'.$_POST['create_new_user'].'</strong>. Пароль <strong>'.$pwd.'</strong></p>';
-			$qqq='INSERT INTO users(U_login,U_pwd) VALUES ("'.$this->filter_txt($_POST['create_new_user']).'","'.$pwd.'")';
+			$qqq='INSERT INTO users(U_login,U_pwd) VALUES ("'.$this->filter_txt($_POST['create_new_user']).'","'.md5($pwd).'")';
 //			echo $qqq;
 			mysql_query($qqq,$this->lnk);
 			}
