@@ -42,7 +42,7 @@
 <ol>
 <li><a href="https://github.com/vodolaz095/SecChat">https://github.com/vodolaz095/SecChat</a> - Репозиторий этого чат-сервера</li>
 <li><a name="xampp" id="xampp"></a><a href="http://www.apachefriends.org/en/xampp.html">http://www.apachefriends.org/en/xampp.html</a> - Готовый сервер, на котором тестировался данный чат</li>
-<li><a name="xampp" id="xampp"></a><a href="http://fotobase.org">http://fotobase.org</a> - Социальная сеть для профессионалов фотобизнеса - фотографов, фотомоделей, визажистов, ретушёров</li>
+<li><a href="http://fotobase.org">http://fotobase.org</a> - Социальная сеть для профессионалов фотобизнеса - фотографов, фотомоделей, визажистов, ретушёров</li>
 </ol>
 
 
