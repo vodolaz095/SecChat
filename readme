@@ -11,7 +11,7 @@ Feature overview
 4) Crossbrowser compatablity - It works on Opera, Safari,Crome 13.X and Lynx!!!
 
 Installation
-1) install xampp
+1) install xampp http://www.apachefriends.org/en/xampp-linux.html
 2) extract everything from package of this chat server to /opt/lampp/htdocs
 3) in file /etc/httpd.conf change string "DocumentRoot /opt/lampp/htdocs" to string "DocumentRoot /opt/lampp/htdocs/www"
 4) in file /opt/lampp/etc/extra/httpd-ssl.conf change 
