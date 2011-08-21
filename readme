@@ -1,15 +1,31 @@
 secchat
 
-Secure php5+mysql5+query chat for local and global networks.
+Secure php5+mysql5+jquery chat for local and global networks.
 Program intendet to work with Apache over HTTPS protocol.
 
 
 Feature overview
-1)
-2)
-3)
-
+1) Every modern browser can be a client side software for this chat
+2) All interactions go throw HTTPS protocol - hard to intercept and decrypt packets
+3) Quite easy to install - tested on XAMPP 1.7.4 + Fedora 14
+4) Crossbrowser compatablity - It works on Opera, Safari,Crome 13.X and Lynx!!!
 
 Installation
+1) install xampp http://www.apachefriends.org/en/xampp-linux.html
+2) extract everything from package of this chat server to /opt/lampp/htdocs
+3) in file /etc/httpd.conf change string "DocumentRoot /opt/lampp/htdocs" to string "DocumentRoot /opt/lampp/htdocs/www"
+4) in file /opt/lampp/etc/extra/httpd-ssl.conf change 
+string "DocumentRoot /opt/lampp/htdocs" to string "DocumentRoot /opt/lampp/htdocs/www"
+5) Run xampp - /opt/lampp/lampp start
+6) set up login and password for MySQL database access in file /opt/lampp/htdocs/secchat-classes/secchat.ini
+it is wise to set s_persistent to 1 if MySQL server is on separate than apache server!!!
+
+7) start local server - http://127.0.0.1
+8) if everything is ok, you have to initialize database - goto http://127.0.0.1/install - write password for root user 
+2 times, initialaze db and you can logon.
+9) create users, send them logins and passwords. Set up channels, invite users to them
+10) - chat!
+
+
 
 FAQ
