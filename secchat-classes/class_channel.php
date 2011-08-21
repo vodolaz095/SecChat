@@ -30,6 +30,58 @@ $a=mysql_real_escape_string($a);
 return $a;
 }
 
+private function plural($n, &$plurals) 
+{
+  $plural =
+      ($n % 10 == 1 && $n % 100 != 11 ? 0 : 
+          ($n % 10 >= 2 && $n % 10 <= 4 && 
+          ($n % 100 < 10 or $n % 100 >= 20) ? 1 : 2));
+  return $plurals[$plural];
+}
+
+
+private function relativeTime($dt, $precision = 2) 
+{
+  $times = array(
+    365*24*60*60    =>  array("год", "года", "лет"),
+    30*24*60*60     =>  array("месяц", "месяца", "месяцев"),
+        7*24*60*60      =>  array("неделя", "недели", "недель"),
+        24*60*60        =>  array("день", "дня", "дней"),
+        60*60           =>  array("час", "часа", "часов"),
+        60              =>  array("минута", "минуты", "минут"),
+        1               =>  array("секунда", "секунды", "секунд"),
+  );
+
+  $passed = time() - $dt;
+
+  if($passed < 5) 
+  {
+    $output='менее 5 секунд назад';
+  } 
+  else 
+  {
+    $output = array();
+    $exit = 0;
+        foreach($times as $period => $name) 
+		{
+
+          if($exit >= $precision || ($exit > 0 && $period < 60)) break;
+            $result = floor($passed / $period);
+
+            if ($result > 0) 
+			{
+                $output[] = $result . ' ' .$this->plural($result, $name);
+                $passed -= $result * $period;
+                $exit++;
+            } else if ($exit > 0) $exit++;
+        }
+        $output = implode(' и ', $output).' назад';
+    }
+    return $output;
+}
+
+
+
 public function __construct($URI,$user,$link)
 	{
 	if (mysql_ping($link) and get_class($user)=='USER' and preg_match('~^[A-z0-9_\-]+$~',$URI))
@@ -125,9 +177,9 @@ public function post($a,$ajax=false)
 public function list_mesg($a=false)
 	{
 	if (!$a)
-	$res=mysql_query('SELECT * FROM mesg RIGHT JOIN users ON (UID=mesg_UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS ASC');
+	$res=mysql_query('SELECT *, UNIX_TIMESTAMP(mesg_DTS) AS DTS FROM mesg RIGHT JOIN users ON (UID=mesg_UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS ASC');
 	elseif (is_numeric($a))
-	$res=mysql_query('SELECT * FROM mesg RIGHT JOIN users ON (UID=mesg_UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS DESC LIMIT '.$this->filter($a));
+	$res=mysql_query('SELECT *, UNIX_TIMESTAMP(mesg_DTS) AS DTS  FROM mesg RIGHT JOIN users ON (UID=mesg_UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS DESC LIMIT '.$this->filter($a));
 	else return false;
 	
 	$b=mysql_num_rows($res);
@@ -136,8 +188,8 @@ public function list_mesg($a=false)
 		echo '<div class="msg"';
 		if ($a>0) echo ' id="new_comment" ';
 		echo '>';
-		echo '<p><strong>'.mysql_result($res,$i,'U_login').'</strong> '.mysql_result($res,$i,'mesg_DTS');
-		echo ' <a href="https://www.nic.ru/whois/?query='.mysql_result($res,$i,'mesg_IP').'">'.mysql_result($res,$i,'mesg_IP').'</a>';
+		echo '<p><strong>'.mysql_result($res,$i,'U_login').'</strong> '.$this->relativeTime(mysql_result($res,$i,'DTS'));
+		echo '  IP: <a href="https://www.nic.ru/whois/?query='.mysql_result($res,$i,'mesg_IP').'">'.mysql_result($res,$i,'mesg_IP').'</a>';
 		echo '</p>';
 //		if ($a)
 		echo '<p>'.mysql_result($res,$i,'mesg_TXT').'</p>';
