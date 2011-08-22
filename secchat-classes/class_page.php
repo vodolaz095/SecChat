@@ -27,7 +27,7 @@ return $a;
 
 ////////////
 public function __construct($user,$link)
-	{
+{
 	if (mysql_ping($link)  and get_class($user)=='USER')
 		{
 		$this->lnk=$link;
@@ -39,9 +39,9 @@ public function __construct($user,$link)
 		}
 		else
 		{
-		die("No connection to db");
+		return false;
 		}
-	}
+}
 
 private function makeheader($title,$subtitle)
 {
@@ -86,8 +86,6 @@ echo '		<li><a href="/exit">Выход</a></li>';
  
 <div id="content"> 
 <?
-
-
 }
 
 private function makebottom()
@@ -142,9 +140,9 @@ private function mainpage()
 		}
 	}
 	else
-	{
-	echo '<p>Нет каналов</p>';
-	}
+	    {
+	    echo '<p>Нет каналов</p>';
+	    }
 	
 	$this->makebottom();
 	}
@@ -184,16 +182,16 @@ return true;
 
 private function iplog()
 {
-	$this->makeheader('Лог доступа','');
-	$this->USER->ip_log();
-	$this->makebottom();
+$this->makeheader('Лог доступа','');
+$this->USER->ip_log();
+$this->makebottom();
 }
 
 private function about()
 {
-	$this->makeheader('О проекте SecChat','');
-	include("func_about.php");
-	$this->makebottom();
+$this->makeheader('О проекте SecChat','');
+include("func_about.php");
+$this->makebottom();
 }
 
 private function admin_users()
@@ -269,5 +267,6 @@ elseif(preg_match('~^/change_pwd/?~',$q)) $this->change_pwd();
 else header("HTTP/1.0 404 Not Found");
 }
 
+///////end class
 }
 </script>

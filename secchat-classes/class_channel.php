@@ -111,7 +111,7 @@ else
 			{
 			$this->channel=mysql_fetch_assoc($res);
 //			var_dump($this->channel);
-			return $this;			
+			return $this;
 			}
 			else
 			{
