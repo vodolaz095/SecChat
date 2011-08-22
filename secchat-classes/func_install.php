@@ -114,6 +114,16 @@ if($_POST['root_pwd1']==$_POST['root_pwd2'])
 	
 	mysql_query('TRUNCATE `users`',$link);
 	mysql_query('INSERT INTO `users` (`UID`, `U_login`, `U_pwd`, `U_active`, `admin_users`, `moder_users`, `admin_channels`, `moder_channels`, `U_host`) VALUES (1,	"root",	md5("'.$_POST['root_pwd1'].'"),	1,	1,	1,	1,	1,	NULL)',$link);
+	
+	mysql_query('DROP TABLE IF EXISTS `online`',$link);
+	
+	mysql_query('CREATE TABLE `online` (
+  `onlinesince` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `UID` int(6) NOT NULL,
+  PRIMARY KEY  (`onlinesince`),
+  UNIQUE KEY `UID` (`UID`)
+) ENGINE=MEMORY DEFAULT CHARSET=cp1251 COLLATE=cp1251_general_cs',$link);
+	
 	}
 	else
 	{

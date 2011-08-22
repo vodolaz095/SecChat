@@ -1,5 +1,4 @@
 <script language="php">
-header( 'Content-Type: text/html; charset=windows-1251;' );
 session_start();
 include "../../secchat-classes/lib.php";
 //var_dump($_POST);
@@ -10,16 +9,17 @@ $link=nmysql();
 $user=new USER($link);
 $channel=new CHANNEL($_POST['URI'],$user,$link);
 
-if ($_POST['s']==session_id())
+if ($_POST['s']==session_id() and $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest')
 	{
 	if($_POST['count']==1) echo $channel->count_mesg();
-	elseif($_POST['list']) $channel->list_mesg($_POST['list']);
+	elseif($_POST['list']) 
+		{
+		header('Content-Type: text/html; charset=windows-1251;');
+		$channel->list_mesg($_POST['list']);
+		}
 	elseif ($_POST['new_mesg']) 
 		{
-
-//		echo '///'.$_POST['new_mesg'].'/'.$channel->filter($_POST['new_mesg']);
-		
-
+		header('Content-Type: text/html; charset=windows-1251;');
 		$channel->post($_POST,true);
 		$channel->list_mesg(1);		
 		}

@@ -1,7 +1,6 @@
 <script language="php">
-header('Server: ');
-header('X-Powered-By: ');
-header('Content-Type: text/html; charset=windows-1251;');
+//header('Server: ');
+//header('X-Powered-By: ');
 
 $secchat=@parse_ini_file('secchat.ini');
 if(!$secchat) die('Конфигурационный файл */secchat-classes/secchat.ini отсутствует!');

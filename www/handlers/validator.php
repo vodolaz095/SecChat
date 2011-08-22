@@ -11,13 +11,13 @@ return $a;
 }
 
 
-if ($_POST['s']==session_id())
+if ($_POST['s']==session_id() and $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest')
 {
-header("Content-Type: text/html; charset=windows-1251");
 	if($_POST['new_U'])
 		{
 		if(preg_match('~[A-z0-9_\-]+~',$_POST['new_U']))
 			{
+			header('Content-Type: text/html; charset=windows-1251;');
 			$link=nmysql();
 			$res=mysql_query('SELECT * FROM  users  WHERE U_login="'.filter_txt($_POST['new_U']).'"',$link);
 			if (mysql_num_rows($res)==0)
@@ -37,6 +37,7 @@ header("Content-Type: text/html; charset=windows-1251");
 		{
 		if(preg_match('~[A-z0-9_\-]+~',$_POST['select_U']))
 			{
+			header('Content-Type: text/html; charset=windows-1251;');
 			$link=nmysql();
 			$res=mysql_query('SELECT * FROM  users  WHERE U_login="'.filter_txt($_POST['select_U']).'"',$link);
 			if (mysql_num_rows($res)==1)
@@ -66,5 +67,9 @@ header("Content-Type: text/html; charset=windows-1251");
 		if(preg_match('~[\W]{16}~', $_POST['pwd'])) $s++;				
 		echo $s;
 		}
+}
+else
+{
+header("HTTP/1.0 404 Not Found");
 }
 </script>

@@ -4,6 +4,7 @@ class CHANNEL
 private $channel;
 private $lnk;
 private $rights;
+private $valid;
 ///////////////
 
 public function filter($a,$ajax=false)
@@ -80,7 +81,10 @@ private function relativeTime($dt, $precision = 2)
     return $output;
 }
 
-
+public function is_valid()
+	{
+	return $this->valid;
+	}
 
 public function __construct($URI,$user,$link)
 	{
@@ -110,17 +114,19 @@ else
 		if(mysql_num_rows($res)==1)
 			{
 			$this->channel=mysql_fetch_assoc($res);
-//			var_dump($this->channel);
+			$this->valid=true;
 			return $this;
 			}
 			else
 			{
+			$this->valid=false;
 			return false;
 			}
 		
 		}
 		else
 		{
+		unset($this);
 		return false;
 		}
 	
@@ -177,18 +183,24 @@ public function post($a,$ajax=false)
 public function list_mesg($a=false)
 	{
 	if (!$a)
-	$res=mysql_query('SELECT *, UNIX_TIMESTAMP(mesg_DTS) AS DTS FROM mesg RIGHT JOIN users ON (UID=mesg_UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS ASC');
+	$res=mysql_query('SELECT *, UNIX_TIMESTAMP(mesg_DTS) AS DTS,UNIX_TIMESTAMP(onlinesince) AS online_DTS FROM mesg LEFT JOIN users ON (UID=mesg_UID) LEFT JOIN online ON (users.UID=online.UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS ASC');
 	elseif (is_numeric($a))
-	$res=mysql_query('SELECT *, UNIX_TIMESTAMP(mesg_DTS) AS DTS  FROM mesg RIGHT JOIN users ON (UID=mesg_UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS DESC LIMIT '.$this->filter($a));
+	$res=mysql_query('SELECT *, UNIX_TIMESTAMP(mesg_DTS) AS DTS, UNIX_TIMESTAMP(onlinesince) AS online_DTS  FROM mesg LEFT JOIN users ON (UID=mesg_UID) LEFT JOIN online ON (users.UID=online.UID) WHERE mesg_channel="'.$this->filter($this->channel['channel_id']).'" ORDER BY mesg_DTS DESC LIMIT '.$this->filter($a));
 	else return false;
 	
 	$b=mysql_num_rows($res);
 	for($i=0;$i<$b;$i++)
 		{
-		echo '<div class="msg"';
+		echo "\n\n\n".'<div class="msg"';
 		if ($a>0) echo ' id="new_comment" ';
 		echo '>';
-		echo '<p><strong>'.mysql_result($res,$i,'U_login').'</strong> '.$this->relativeTime(mysql_result($res,$i,'DTS'));
+		echo '<p><strong ';
+		if (time()-mysql_result($res,$i,'online_DTS')<5) echo ' style="color:#003300;" title="Пользователь на сайте"';
+		else echo ' style="color:#990000;" title="Пользователь отключился"';
+		echo '>'.mysql_result($res,$i,'U_login');
+ 
+		echo '</strong> ';
+		if (!$a) echo $this->relativeTime(mysql_result($res,$i,'DTS'));
 		echo '  IP: <a href="https://www.nic.ru/whois/?query='.mysql_result($res,$i,'mesg_IP').'">'.mysql_result($res,$i,'mesg_IP').'</a>';
 		echo '</p>';
 //		if ($a)
@@ -199,7 +211,6 @@ public function list_mesg($a=false)
 		}
 	echo '<span id="num_mesg" style="display:none">'.$b.'</span>';
 	}
-
 
 public function list_users()
 	{

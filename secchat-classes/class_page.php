@@ -45,6 +45,7 @@ public function __construct($user,$link)
 
 private function makeheader($title,$subtitle)
 {
+header('Content-Type: text/html; charset=windows-1251;');
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
 <head> 
@@ -167,7 +168,8 @@ return true;
 private function show_channel($a)
 {
 $c=new CHANNEL($a,$this->USER,$this->lnk);
-if ($c)
+//var_dump($c->is_valid());
+if ($c->is_valid())
 	{
 	$this->makeheader('Канал: '.$a,'');
 	$c->show();
@@ -175,9 +177,8 @@ if ($c)
 	}
 else
 	{
-	header("HTTP/1.0 404 Not Found");
+	header("Location: /");
 	}
-return true;
 }
 
 private function iplog()
@@ -241,7 +242,7 @@ private function panic()
 		<?
 		$this->makebottom();
 	}
-	else header("HTTP/1.0 404 Not Found");
+	else header("Location: /");
 }
 
 private function install()
@@ -255,16 +256,16 @@ public function dispatcher($q)
 {
 //var_dump($q);
 if($q=='/') $this->mainpage();
-elseif(preg_match('~^/c/([A-z0-9_\-]+)~',$q,$a) and $this->rights) $this->show_channel($a[1]);
-elseif(preg_match('~^/log/?~',$q) and $this->rights) $this->iplog();
-elseif(preg_match('~^/about/?~',$q)) $this->about();
-elseif(preg_match('~^/admin_users/?~',$q) and ($this->rights['admin_users']==1 or $this->rights['moder_users']==1) ) $this->admin_users();
-elseif(preg_match('~^/admin_channels/?~',$q)  and ($this->rights['admin_channels'] or $this->rights['moder_channels'])) $this->admin_channels();
-elseif(preg_match('~^/exit/?~',$q)) {session_destroy();header("Location: /");}
-elseif(preg_match('~^/panic/?~',$q) and $this->rights['admin_users']==1 and $this->rights['admin_channels']==1) $this->panic();
-elseif(preg_match('~^/install/?~',$q)) $this->install();
-elseif(preg_match('~^/change_pwd/?~',$q)) $this->change_pwd();
-else header("HTTP/1.0 404 Not Found");
+elseif(preg_match('~^/c/([A-z0-9_\-]+)$~',$q,$a) and $this->rights) $this->show_channel($a[1]);
+elseif(preg_match('~^/log/?$~',$q) and $this->rights) $this->iplog();
+elseif(preg_match('~^/about/?$~',$q)) $this->about();
+elseif(preg_match('~^/admin_users/?$~',$q) and ($this->rights['admin_users']==1 or $this->rights['moder_users']==1) ) $this->admin_users();
+elseif(preg_match('~^/admin_channels/?$~',$q)  and ($this->rights['admin_channels'] or $this->rights['moder_channels'])) $this->admin_channels();
+elseif(preg_match('~^/exit/?$~',$q)) {session_destroy();header("Location: /");}
+elseif(preg_match('~^/panic/?$~',$q) and $this->rights['admin_users']==1 and $this->rights['admin_channels']==1) $this->panic();
+elseif(preg_match('~^/install/?$~',$q)) $this->install();
+elseif(preg_match('~^/change_pwd/?$~',$q)) $this->change_pwd();
+else header("Location: /");
 }
 
 ///////end class
