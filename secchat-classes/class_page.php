@@ -94,7 +94,7 @@ private function makebottom()
 ?>
 </div> 
 <div id="footer"> 
-&copy; SecChat  - Остроумов Анатолий - 2011 год
+&copy; <a href="https://github.com/vodolaz095/secchat">SecChat</a>  - Остроумов Анатолий - 2011 год
 </div> 
 <div id="security" align="center">
 
