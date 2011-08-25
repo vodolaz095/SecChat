@@ -54,6 +54,17 @@
 			}
 			echo mysql_error($this->lnk);
 		}
+	
+	if ($_POST['s']==session_id())
+	{
+	if ($s==2)
+	$qqq='UPDATE users SET U_pwd="'.md5($_POST['new_pwd_val']).'" WHERE UID="'.$this->filter($_POST['new_pwd']).'"';
+	else
+	$qqq='UPDATE users SET U_pwd="'.md5($_POST['new_pwd_val']).'" WHERE UID="'.$this->filter($_POST['new_pwd']).'" && U_host="'.$this->rights['UID'].'"';
+	
+	echo $qqq;
+	mysql_query($qqq,$this->lnk);
+	}
 ////////////////////////////	
 	
 	if ($s==2) $res=mysql_query('SELECT * FROM users WHERE UID!="'.$this->rights['UID'].'" ORDER BY U_login ASC',$this->lnk);	
