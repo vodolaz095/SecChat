@@ -1,5 +1,2 @@
-Options +FollowSymLinks
 RewriteEngine on
-RewriteBase /
-
-RewriteRule ^([_A-z0-9/]*)$ /index.php
+RewriteRule ^([_A-z0-9/]*)$ index.php
