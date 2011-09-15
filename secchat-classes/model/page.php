@@ -66,7 +66,7 @@ public function mainpage()
     {
     for($i=0;$i<$b;$i++)
         {
-        echo '<p><strong><a href="'.$this->basedir.'/c/'.mysql_result($res,$i,'channel_name').'">'.mysql_result($res,$i,'channel_name').'</a></strong> - ';
+        echo '<p><strong><a href="'.$this->ini['basedir'].'/c/'.mysql_result($res,$i,'channel_name').'">'.mysql_result($res,$i,'channel_name').'</a></strong> - ';
         echo ''.mysql_result($res,$i,'channel_mesg').'</p>';
         }
     }
