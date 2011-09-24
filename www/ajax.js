@@ -107,5 +107,5 @@ function get_time()
 $.post(basedir+'/handlers/time_handler', {}, function(data){ $('#server_time').html(data); });
 }
 
-setInterval("get_time()",500);
+setInterval("get_time()",ajax_delay);
 /////////////////////////////b
