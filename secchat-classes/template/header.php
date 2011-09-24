@@ -11,6 +11,7 @@ if (get_class($this)=='PAGE')
 <title><?php echo $title;?></title>
 <script language="javascript" type="text/javascript">
 var basedir="<?php echo $this->ini['basedir'];?>";
+var ajax_delay="<?php echo $this->ini['ajax_delay'];?>";
 </script>
 <script language="javascript" src="<?php echo $this->ini['basedir'];?>/jquery.min.js" type="text/javascript"></script>
 <script language="javascript" src="<?php echo $this->ini['basedir'];?>/ajax.js?a=<? echo date('U');?>" type="text/javascript"></script>
