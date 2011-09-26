@@ -83,7 +83,7 @@ public function __construct($URI,$USER,$link)
         {
         $this->lnk=$link;
         $this->rights=$USER->get_user();
-
+        $this->ini['ajax_delay']=300;
 
         if ($this->rights['admin_channels']==1)
         {
@@ -130,7 +130,7 @@ public  function show()
  */
     ?>
     <script language="javascript">
-    setInterval("check_new_comments('<?php echo $this->channel['channel_name'];?>','<?php echo CONTROLLER::create_s(); ?>')",300);
+    setInterval("check_new_comments('<?php echo $this->channel['channel_name'];?>','<?php echo CONTROLLER::create_s(); ?>')",<?php echo $this->ini['ajax_delay'];?>);
     </script>
     <?
     echo '<h3 id="URI">'.$this->channel['channel_name'].'</h3>';
