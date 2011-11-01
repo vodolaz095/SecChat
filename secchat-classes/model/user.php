@@ -228,7 +228,7 @@ if(CONTROLLER::validate_request($_POST['s']))
     }
 ?>
 <h1>Сменить пароль</h1>
-<form action="/change_pwd" method="post">
+<form action="" method="post">
 <input name="s" type="hidden" value="<?php echo CONTROLLER::create_s(); ?>">
 <p>Введите новый пароль</p>
 <p><input name="new_pwd_val" type="password"></p>
