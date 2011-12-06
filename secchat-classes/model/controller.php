@@ -111,13 +111,21 @@ return $b;
 static public function validate_request($v)
     {
         /*
+         * csrf защита
          * Проверка, отправлена ли форма с этого же сайта?
          */
-        if (md5($_SERVER['HTTP_REFERER'].session_id()) == $v)
-            return (true);
-        else
-            return false;
-
+        if(isset($_SESSION['bik']))
+        {
+            if (md5($_SERVER['HTTP_REFERER'].session_id().$_SESSION['bik']) == $v)
+                {
+                $nextsec=time()+1;
+                $_SESSION['bik']=md5($_SESSION['bik']);
+                return (true);
+                }
+            else
+                return false;
+        }
+        else return false;
     }
 
 static public function create_s()
@@ -125,12 +133,17 @@ static public function create_s()
             /*
              * Проверка, отправлена ли форма с этого же сайта?
              */
+            if(!isset($_SESSION['bik']))
+                {
+                    $_SESSION['bik']=md5(time().'secchat');
+                }
+
             if(isset($_SERVER['HTTPS']))
             $a='https://';
             else
             $a='http://';
 
-            $a=$a.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].session_id();//.'  '.$_SERVER['HTTP_REFERER'].'/'.session_id();
+            $a=$a.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].session_id().$_SESSION['bik'];
         return md5($a);
         }
 /*
