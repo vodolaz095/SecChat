@@ -75,24 +75,51 @@ elseif(preg_match('~(*UTF8)^[а-яА-Яa-zA-Z0-9/./-\s]+$~',$a) and $mode=='word
 elseif($mode=='text')
     {
     $a=trim($a);
-/*
- * Фильтр ввода сообщения пользователя. Только для кодировки UTF8
- *
- * убираем опасные элементы - джаваскрипты и т.д.
- *
- */
-    $a=preg_replace('~(*UTF8)<img[^>]*>~i',NULL,$a);//картинки
-    $a=preg_replace('~(*UTF8)<a[^>]*>~i',NULL,$a);//ссылки
-    $a=preg_replace('~(*UTF8)<script.*>.*</script>~im',NULL,$a);//скрипты
-    $a=preg_replace('~(*UTF8)<iframe.*>.*</iframe>~im',NULL,$a);//фреймы
-    $a=preg_replace('~(*UTF8)<FRAME\s[^>]*>~im',NULL,$a);//фреймы
-    $a=preg_replace('~(*UTF8)</?frameset[^>]*>~im',NULL,$a);//фреймы
-    $a=preg_replace('~(*UTF8)</?NOFRAMES>~im',NULL,$a);//тексты,
-    //которые показываюься при отсутствии фреймов, показываются всегда
-    $a=preg_replace('~(*UTF8)<([A-z0-9]+)(\s.+)>(.+)</[A-z0-9]>~i','<\\1>\\3</\\1>',$a);
-    //выкидываем свойства объектов типа <p onhover="alert('Ляляля!')"></p>
-    $a=preg_replace('~(*UTF8)\s{2,}~im',"\n",$a);
-    //убираем лишние пробелы
+
+        $a=$rawtext;
+        $inner_link_separator=md5(time());
+        //если есть правильная и индексируемая внешняя ссылка - оставляем от неё только адрес!!!
+        $a=preg_replace("~(*UTF8)<a[^>]*href=['\"]*(http://[^\'\">]*)['\"]*[^>]*>[\s\S]*</a>~i",' \\1 '.PHP_EOL,$a);
+        $a=preg_replace("~(*UTF8)<a[^>]*href=['\"]*(https://[^\'\">]*)['\"]*[^>]*>[\s\S]*</a>~i",' \\1 '.PHP_EOL,$a);
+
+        //если есть локальная (внутренняя) ссылка - оставляем от неё только адрес сайта в правильном формате!!!
+        $a=preg_replace("~(*UTF8)<a[^>]*href=['\"](\/[^\'\">]*)['\"]*[^>]*>[\s\S]*</a>~i",$inner_link_separator.' \\1 '.$inner_link_separator.PHP_EOL,$a);
+
+        //удаляем все ссылки вообще, например с джаваскриптами, и base64_encoded, ftp
+        $a=preg_replace('~(*UTF8)<a[^>]*>~i',NULL,$a);
+        $a=preg_replace('~(*UTF8)</a>~i',NULL,$a);
+        //но их тексты оставляем)))
+
+        //убираем все свойства тэгов, но оставляем теги
+        $a=preg_replace('~(*UTF8)<([A-Za-z0-9]+)\s*([^<>]*)>~im','<\\1>',$a);
+
+        //удаляем оставшиеся ссылки
+        $a=preg_replace("~(*UTF8)<table~i",'<table border="1" ',$a); //показываем таблицы - криво, но уж что с этим поделать
+
+        //убираем опасные элементы
+        $a=preg_replace('~(*UTF8)<img[^>]*>~i',NULL,$a);//картинки
+        $a=preg_replace('~(*UTF8)<script[^>]*?>.*?</script>~sim',NULL,$a);//скрипты, выполняемые на клиентской стороне
+
+        $a=preg_replace('~(*UTF8)<iframe.*>.*</iframe>~im',NULL,$a);//фреймы
+        $a=preg_replace('~(*UTF8)<FRAME\s[^>]*>~im',NULL,$a);//фреймы
+        $a=preg_replace('~(*UTF8)</?frameset[^>]*>~im',NULL,$a);//фреймы
+
+        $a=preg_replace('~(*UTF8)</?NOFRAMES>~im',NULL,$a);//тексты, которые показываюься при отсутствии фреймов, показываются всегда
+
+        $a=preg_replace("~(*UTF8)</?div>~i",NULL,$a); //удаляем теги div - чтобы не ломалась вёрстка
+
+
+
+        //после того, как удалили всё ненужное из текста
+
+        //делаем локальные ссылки c помощью модуля редиректа из URL внешних адресов в тексте
+        $retrans_uri='/away?url='; /*@todo@ доделать.... */
+        $a=preg_replace("~(*UTF8) https?://([^\s]*) ~i",'<a href="'.$retrans_uri.'\\1">\\1</a>',$a);
+
+
+        //делаем локальные ссылки из локальных URL
+        $a=preg_replace("~(*UTF8)$inner_link_separator ([^\s]+) $inner_link_separator~i",'<a href="\\1">\\1</a>',$a);
+
     $b=mysql_real_escape_string($a);
     }
 else
